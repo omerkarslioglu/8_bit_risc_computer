@@ -1,7 +1,6 @@
-# 8_bit_risc_computer
-A RISC ARCHITECTURE BASED 8 BITS COMPUTER DESIGN AND IMPLEMENTATION ON FPGA USING VHDL
+# A RISC ARCHITECTURE BASED 8 BITS COMPUTER DESIGN AND IMPLEMENTATION ON FPGA USING VHDL
 
-![Computer Arch Sch](https://user-images.githubusercontent.com/67158049/181514421-cfe11f83-f0da-4a46-b91c-8505617540eb.png)
+![image](https://user-images.githubusercontent.com/67158049/181516538-8c507cff-0d0f-49fe-8f68-f90ac3f108cf.png)
 
 The general aim of this project is to design a computer system that requires low cost, has high efficiency 8-bit register cells and has RISC instruction set architecture. 
 
