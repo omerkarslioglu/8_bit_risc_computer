@@ -5,9 +5,9 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 entity port_interrupt_detector_unit is -- rising edge detector
 	port(
-		clk					: in std_logic;
-		rst					: in std_logic;
-		pins_i 				: in std_logic_vector(7 downto 0);
+		clk								: in std_logic;
+		rst								: in std_logic;
+		pins_i 						: in std_logic_vector(7 downto 0);
 		interrupt_info_o	: out std_logic_vector(7 downto 0);
 		interrupt_flag_o 	: out std_logic
 	);

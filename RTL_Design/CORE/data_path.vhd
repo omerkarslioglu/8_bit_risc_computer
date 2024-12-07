@@ -5,31 +5,29 @@ use ieee.std_logic_unsigned.all;
 
 entity data_path is 
 	port(
-		clk 		: in std_logic;
-		rst 		: in std_logic;
-		IR_Load 	: in std_logic; -- Instruction Register Load
-		MAR_Load 	: in std_logic; -- Memory Access Register Load
-		PC_Load 	: in std_logic; -- Program Counter Register Load
-		SP1_Load 	: in std_logic;
-		SP2_Load 	: in std_logic;
-		PC_Inc		: in std_logic;	-- Program Counter Register Incrementer
-		A_Load		: in std_logic;
-		B_Load 		: in std_logic;
-		ALU_Sel		: in std_logic_vector(4 downto 0);
-		CCR_Load	: in std_logic; -- Condition code register
-		BUS1_Sel	: in std_logic_vector(2 downto 0);
-		BUS2_Sel	: in std_logic_vector(1 downto 0);
-		from_memory	: in std_logic_vector(7 downto 0);
+		clk 						: in std_logic;
+		rst 						: in std_logic;
+		IR_Load 				: in std_logic; -- Instruction Register Load
+		MAR_Load 				: in std_logic; -- Memory Access Register Load
+		PC_Load 				: in std_logic; -- Program Counter Register Load
+		SP1_Load 				: in std_logic;
+		SP2_Load 				: in std_logic;
+		PC_Inc					: in std_logic;	-- Program Counter Register Incrementer
+		A_Load					: in std_logic;
+		B_Load 					: in std_logic;
+		ALU_Sel					: in std_logic_vector(4 downto 0);
+		CCR_Load				: in std_logic; -- Condition code register
+		BUS1_Sel				: in std_logic_vector(2 downto 0);
+		BUS2_Sel				: in std_logic_vector(1 downto 0);
+		from_memory			: in std_logic_vector(7 downto 0);
 		
 		-- Outputs :
-		IR			: out std_logic_vector(7 downto 0);
-		address 	: out std_logic_vector(7 downto 0); -- address to memory
-		CCR_Result	: out std_logic_vector(3 downto 0); -- NZVC
-		to_memory	: out std_logic_vector(7 downto 0);  -- data to memery
-		IC_reset_o  : out std_logic;
-		pc_in_scr_o : out std_logic
-		
-		
+		IR							: out std_logic_vector(7 downto 0);
+		address 				: out std_logic_vector(7 downto 0); -- address to memory
+		CCR_Result			: out std_logic_vector(3 downto 0); -- NZVC
+		to_memory				: out std_logic_vector(7 downto 0);  -- data to memery
+		IC_reset_o  		: out std_logic;
+		pc_in_scr_o 		: out std_logic
 	);	
 end data_path;
 

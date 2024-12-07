@@ -5,27 +5,27 @@ use ieee.std_logic_unsigned.all;
 
 entity control_unit is
  port(
-		clk				: in std_logic;
-		rst				: in std_logic;
+		clk						: in std_logic;
+		rst						: in std_logic;
 		CCR_Result		: in std_logic_vector(3 downto 0);
-		IR				: in std_logic_vector(7 downto 0);
+		IR						: in std_logic_vector(7 downto 0);
 		IC_Signal_i		: in std_logic_vector(7 downto 0); -- Interrupt controller signal shows which peripheral
-		IC_Flag_i		: in std_logic; -- interrupt flag
-		pc_in_scr_i     : in std_logic;
+		IC_Flag_i			: in std_logic; -- interrupt flag
+		pc_in_scr_i		: in std_logic;
 		-- Outputs :      
-		IR_Load 		: out std_logic; -- Instruction Register Load
-		MAR_Load 		: out std_logic; -- Memory Access Register Load
-		PC_Load 		: out std_logic; -- Program Counter Register Load
+		IR_Load 			: out std_logic; -- Instruction Register Load
+		MAR_Load 			: out std_logic; -- Memory Access Register Load
+		PC_Load 			: out std_logic; -- Program Counter Register Load
 		SP1_Load 	    : out std_logic;
-        SP2_Load        : out std_logic;
-		PC_Inc			: out std_logic; -- Program Counter Register Incrementer
-		A_Load			: out std_logic;
-		B_Load 			: out std_logic;
-		ALU_Sel			: out std_logic_vector(4 downto 0);
-		CCR_Load		: out std_logic; -- Condition code register
-		BUS1_Sel		: out std_logic_vector(2 downto 0);
-		BUS2_Sel		: out std_logic_vector(1 downto 0);
-		write_en		: out std_logic
+    SP2_Load      : out std_logic;
+		PC_Inc				: out std_logic; -- Program Counter Register Incrementer
+		A_Load				: out std_logic;
+		B_Load 				: out std_logic;
+		ALU_Sel				: out std_logic_vector(4 downto 0);
+		CCR_Load			: out std_logic; -- Condition code register
+		BUS1_Sel			: out std_logic_vector(2 downto 0);
+		BUS2_Sel			: out std_logic_vector(1 downto 0);
+		write_en			: out std_logic
 		--IC_reset_o		: out std_logic
 	);
 end control_unit;
@@ -33,101 +33,127 @@ end control_unit;
 architecture arch of control_unit is
 
 type state_type is	(
-						STATE_FETCH_0 , STATE_FETCH_1 , STATE_FETCH_2 , STATE_DECODE_3 ,
-						
-						STATE_LDA_IMM_4 , STATE_LDA_IMM_5 , STATE_LDA_IMM_6 , -- YUKLE A SABIT
-						STATE_LDA_DIR_4 , STATE_LDA_DIR_5 , STATE_LDA_DIR_6 , STATE_LDA_DIR_7 , STATE_LDA_DIR_8, -- YUKLE A DIRECT
-						STATE_LDB_IMM_4 , STATE_LDB_IMM_5 , STATE_LDB_IMM_6 , -- YUKLE B SABIT
-						STATE_LDB_DIR_4 , STATE_LDB_DIR_5 , STATE_LDB_DIR_6 , STATE_LDB_DIR_7 , STATE_LDB_DIR_8, -- YUKLE B DIRECT
-						
-						STATE_LOAD_PC_TO_SP1_4 ,
-                        STATE_LOAD_SP1_TO_PC_4 ,
-                        STATE_JUMP_AND_LINK_SP1_4 , STATE_JUMP_AND_LINK_SP1_5 , STATE_JUMP_AND_LINK_SP1_6 ,
-                        STATE_LOAD_SP1_IMM_4 , STATE_LOAD_SP1_IMM_5 , STATE_LOAD_SP1_IMM_6 ,       
-                        STATE_LOAD_SP1_DIR_4 , STATE_LOAD_SP1_DIR_5 , STATE_LOAD_SP1_DIR_6 , STATE_LOAD_SP1_DIR_7 , STATE_LOAD_SP1_DIR_8 ,       
-						
-						STATE_STA_DIR_4 , STATE_STA_DIR_5 , STATE_STA_DIR_6 , STATE_STA_DIR_7 ,
-						STATE_STB_DIR_4 , STATE_STB_DIR_5 , STATE_STB_DIR_6 , STATE_STB_DIR_7 ,
-
-						STATE_ADD_AB_4  	,
-						STATE_SUB_AB_4		,
-						STATE_AND_AB_4  	,
-						STATE_OR_AB_4		,
-						STATE_INC_A_4		,
-						STATE_INC_B_4       ,
-						STATE_DEC_A_4		,
-						STATE_DEC_B_4       ,
-						STATE_SRL_A_4		,
-						STATE_SLL_A_4		,
-						STATE_SRA_A_4		,
-						STATE_SLA_A_4		,
-						STATE_ROR_A_4		,
-						STATE_ROL_A_4		,
-						STATE_RESET_ALU_4	,
-						STATE_NOT_A_4		,
-						STATE_XOR_AB_4		,
-		
-						STATE_BRA_4     , STATE_BRA_5     , STATE_BRA_6     ,
-						STATE_BEQ_4		, STATE_BEQ_5	  , STATE_BEQ_6     , STATE_BEQ_7,
-						
-						STATE_INTERRUPT_0	, STATE_INTERRUPT_1, STATE_INTERRUPT_2,
-						STATE_LOAD_SP2_TO_PC_4 -- just used for interrupt
-					);
+	STATE_FETCH_0, 
+	STATE_FETCH_1, 
+	STATE_FETCH_2, 
+	STATE_DECODE_3,
+	STATE_LDA_IMM_4, 
+	STATE_LDA_IMM_5, 
+	STATE_LDA_IMM_6, -- YUKLE A SABIT
+	STATE_LDA_DIR_4, 
+	STATE_LDA_DIR_5, 
+	STATE_LDA_DIR_6, STATE_LDA_DIR_7, STATE_LDA_DIR_8, -- YUKLE A DIRECT
+	STATE_LDB_IMM_4, 
+	STATE_LDB_IMM_5, 
+	STATE_LDB_IMM_6, -- YUKLE B SABIT
+	STATE_LDB_DIR_4, 
+	STATE_LDB_DIR_5, 
+	STATE_LDB_DIR_6, 
+	STATE_LDB_DIR_7, 
+	STATE_LDB_DIR_8, -- YUKLE B DIRECT
+	STATE_LOAD_PC_TO_SP1_4,
+  STATE_LOAD_SP1_TO_PC_4,
+  STATE_JUMP_AND_LINK_SP1_4,
+	STATE_JUMP_AND_LINK_SP1_5,
+	STATE_JUMP_AND_LINK_SP1_6,
+  STATE_LOAD_SP1_IMM_4,
+	STATE_LOAD_SP1_IMM_5,
+	STATE_LOAD_SP1_IMM_6,
+  STATE_LOAD_SP1_DIR_4,
+	STATE_LOAD_SP1_DIR_5,
+	STATE_LOAD_SP1_DIR_6,
+	STATE_LOAD_SP1_DIR_7,
+	STATE_LOAD_SP1_DIR_8,
+	STATE_STA_DIR_4,
+	STATE_STA_DIR_5,
+	STATE_STA_DIR_6,
+	STATE_STA_DIR_7,
+	STATE_STB_DIR_4,
+	STATE_STB_DIR_5,
+	STATE_STB_DIR_6,
+	STATE_STB_DIR_7,
+	STATE_ADD_AB_4,
+	STATE_SUB_AB_4,
+	STATE_AND_AB_4,
+	STATE_OR_AB_4,
+	STATE_INC_A_4,
+	STATE_INC_B_4,
+	STATE_DEC_A_4,
+	STATE_DEC_B_4,
+	STATE_SRL_A_4,
+	STATE_SLL_A_4,
+	STATE_SRA_A_4,
+	STATE_SLA_A_4,
+	STATE_ROR_A_4,
+	STATE_ROL_A_4,
+	STATE_RESET_ALU_4,
+	STATE_NOT_A_4,
+	STATE_XOR_AB_4,
+	STATE_BRA_4, 
+	STATE_BRA_5, 
+	STATE_BRA_6,
+	STATE_BEQ_4, 
+	STATE_BEQ_5, 
+	STATE_BEQ_6, 
+	STATE_BEQ_7,
+	STATE_INTERRUPT_0, 
+	STATE_INTERRUPT_1, 
+	STATE_INTERRUPT_2,
+	STATE_LOAD_SP2_TO_PC_4 -- just used for interrupt
+);
 
 
 
 signal current_state , next_state 	: state_type ;
 
---signal IC_reset_o_reg : std_logic;
-
 -- Loads and Stores Commands
-constant YUKLE_A_SBT		:std_logic_vector(7 downto 0) := x"86"; -- Immediade
-constant YUKLE_A			:std_logic_vector(7 downto 0) := x"87"; -- Direct ADDRESS
-constant YUKLE_B_SBT		:std_logic_vector(7 downto 0) := x"88";
-constant YUKLE_B			:std_logic_vector(7 downto 0) := x"89";
+constant YUKLE_A_SBT					:std_logic_vector(7 downto 0) := x"86"; -- Immediade
+constant YUKLE_A							:std_logic_vector(7 downto 0) := x"87"; -- Direct ADDRESS
+constant YUKLE_B_SBT					:std_logic_vector(7 downto 0) := x"88";
+constant YUKLE_B							:std_logic_vector(7 downto 0) := x"89";
 
-constant LOAD_PC_TO_SP1		:std_logic_vector(7 downto 0) := x"90";
-constant LOAD_SP1_TO_PC		:std_logic_vector(7 downto 0) := x"91";
-constant JUMP_AND_LINK_SP1	:std_logic_vector(7 downto 0) := x"92";
-constant LOAD_SP1_IMM   	:std_logic_vector(7 downto 0) := x"93"; -- Immediate Value
-constant LOAD_SP1_DIR   	:std_logic_vector(7 downto 0) := x"94"; -- Direct Address
+constant LOAD_PC_TO_SP1				:std_logic_vector(7 downto 0) := x"90";
+constant LOAD_SP1_TO_PC				:std_logic_vector(7 downto 0) := x"91";
+constant JUMP_AND_LINK_SP1		:std_logic_vector(7 downto 0) := x"92";
+constant LOAD_SP1_IMM   			:std_logic_vector(7 downto 0) := x"93"; -- Immediate Value
+constant LOAD_SP1_DIR   			:std_logic_vector(7 downto 0) := x"94"; -- Direct Address
 
-constant KAYDET_A			:std_logic_vector(7 downto 0) := x"96";
-constant KAYDET_B			:std_logic_vector(7 downto 0) := x"97";
+constant KAYDET_A							:std_logic_vector(7 downto 0) := x"96";
+constant KAYDET_B							:std_logic_vector(7 downto 0) := x"97";
 
 -- Data Manipulations
-constant TOPLA_AB			:std_logic_vector(7 downto 0) :=x"42";
-constant CIKAR_AB			:std_logic_vector(7 downto 0) :=x"43";
-constant AND_AB				:std_logic_vector(7 downto 0) :=x"44";
-constant OR_AB				:std_logic_vector(7 downto 0) :=x"45";
-constant ARTTIR_A			:std_logic_vector(7 downto 0) :=x"46";
-constant ARTTIR_B			:std_logic_vector(7 downto 0) :=x"47";
-constant DUSUR_A			:std_logic_vector(7 downto 0) :=x"48";
-constant DUSUR_B			:std_logic_vector(7 downto 0) :=x"49";
-constant SRL_A				:std_logic_vector(7 downto 0) :=x"4A";
-constant SLL_A				:std_logic_vector(7 downto 0) :=x"4B";
-constant SRA_A				:std_logic_vector(7 downto 0) :=x"4C";
-constant SLA_A				:std_logic_vector(7 downto 0) :=x"4D";
-constant ROR_A				:std_logic_vector(7 downto 0) :=x"4E";
-constant ROL_A				:std_logic_vector(7 downto 0) :=x"4F";
-constant RESET_ALU			:std_logic_vector(7 downto 0) :=x"50";
-constant NOT_A				:std_logic_vector(7 downto 0) :=x"51";
-constant XOR_AB				:std_logic_vector(7 downto 0) :=x"52";
+constant TOPLA_AB							:std_logic_vector(7 downto 0) :=x"42";
+constant CIKAR_AB							:std_logic_vector(7 downto 0) :=x"43";
+constant AND_AB								:std_logic_vector(7 downto 0) :=x"44";
+constant OR_AB								:std_logic_vector(7 downto 0) :=x"45";
+constant ARTTIR_A							:std_logic_vector(7 downto 0) :=x"46";
+constant ARTTIR_B							:std_logic_vector(7 downto 0) :=x"47";
+constant DUSUR_A							:std_logic_vector(7 downto 0) :=x"48";
+constant DUSUR_B							:std_logic_vector(7 downto 0) :=x"49";
+constant SRL_A								:std_logic_vector(7 downto 0) :=x"4A";
+constant SLL_A								:std_logic_vector(7 downto 0) :=x"4B";
+constant SRA_A								:std_logic_vector(7 downto 0) :=x"4C";
+constant SLA_A								:std_logic_vector(7 downto 0) :=x"4D";
+constant ROR_A								:std_logic_vector(7 downto 0) :=x"4E";
+constant ROL_A								:std_logic_vector(7 downto 0) :=x"4F";
+constant RESET_ALU						:std_logic_vector(7 downto 0) :=x"50";
+constant NOT_A								:std_logic_vector(7 downto 0) :=x"51";
+constant XOR_AB								:std_logic_vector(7 downto 0) :=x"52";
 
 -- Branches
-constant ATLA				:std_logic_vector(7 downto 0) :=x"20";
-constant ATLA_NEGATIFSE		:std_logic_vector(7 downto 0) :=x"21";
-constant ATLA_POZITIFSE		:std_logic_vector(7 downto 0) :=x"22";
-constant ATLA_ESITSE_SIFIR	:std_logic_vector(7 downto 0) :=x"23";
-constant ATLA_DEGILSE_SIFIR	:std_logic_vector(7 downto 0) :=x"24";
-constant ATLA_OVERFLOW_VARSA:std_logic_vector(7 downto 0) :=x"25";
-constant ATLA_OVERFLOW_YOKSA:std_logic_vector(7 downto 0) :=x"26";
-constant ATLA_ELDE_VARSA	:std_logic_vector(7 downto 0) :=x"27";
-constant ATLA_ELDE_YOKSA	:std_logic_vector(7 downto 0) :=x"28";
+constant ATLA									:std_logic_vector(7 downto 0) :=x"20";
+constant ATLA_NEGATIFSE				:std_logic_vector(7 downto 0) :=x"21";
+constant ATLA_POZITIFSE				:std_logic_vector(7 downto 0) :=x"22";
+constant ATLA_ESITSE_SIFIR		:std_logic_vector(7 downto 0) :=x"23";
+constant ATLA_DEGILSE_SIFIR		:std_logic_vector(7 downto 0) :=x"24";
+constant ATLA_OVERFLOW_VARSA	:std_logic_vector(7 downto 0) :=x"25";
+constant ATLA_OVERFLOW_YOKSA	:std_logic_vector(7 downto 0) :=x"26";
+constant ATLA_ELDE_VARSA			:std_logic_vector(7 downto 0) :=x"27";
+constant ATLA_ELDE_YOKSA			:std_logic_vector(7 downto 0) :=x"28";
 
 -- General Purpose Instruction
-constant NOP				:std_logic_vector(7 downto 0) :=x"01";
-constant FIR				:std_logic_vector(7 downto 0) :=x"11"; -- finish interrupt routine
+constant NOP									:std_logic_vector(7 downto 0) :=x"01";
+constant FIR									:std_logic_vector(7 downto 0) :=x"11"; -- finish interrupt routine
 
 begin
 
@@ -165,20 +191,20 @@ begin
 				next_state <= STATE_LDB_IMM_4;
 			elsif(IR = YUKLE_B) then
 				next_state <= STATE_LDB_DIR_4;
-			
+
 			elsif(IR = FIR) then
 				next_state <= STATE_LOAD_SP2_TO_PC_4;
 			
 			elsif(IR = LOAD_PC_TO_SP1) then
-                next_state <= STATE_LOAD_PC_TO_SP1_4;
+        next_state <= STATE_LOAD_PC_TO_SP1_4;
 			elsif(IR = LOAD_SP1_TO_PC) then
-                next_state <= STATE_LOAD_SP1_TO_PC_4;
+        next_state <= STATE_LOAD_SP1_TO_PC_4;
 			elsif(IR = JUMP_AND_LINK_SP1) then
-                next_state <= STATE_JUMP_AND_LINK_SP1_4;
+        next_state <= STATE_JUMP_AND_LINK_SP1_4;
 			elsif(IR = LOAD_SP1_IMM) then
-                next_state <= STATE_LOAD_SP1_IMM_4;
+        next_state <= STATE_LOAD_SP1_IMM_4;
 			elsif(IR = LOAD_SP1_DIR) then
-                next_state <= STATE_LOAD_SP1_DIR_4;                       
+        next_state <= STATE_LOAD_SP1_DIR_4;                       
                                     
 			elsif(IR = KAYDET_A) then
 				next_state <= STATE_STA_DIR_4;
@@ -206,14 +232,14 @@ begin
                  next_state <= STATE_SRL_A_4;
  			elsif(IR = SLL_A) then
                  next_state <= STATE_SLL_A_4;
-            elsif(IR = SRA_A) then
-                 next_state <= STATE_SRA_A_4;
+      elsif(IR = SRA_A) then
+           next_state <= STATE_SRA_A_4;
  			elsif(IR = SLA_A) then
                  next_state <= STATE_SLA_A_4;
  			elsif(IR = ROR_A) then
                  next_state <= STATE_ROR_A_4;
-            elsif(IR = ROL_A) then
-                 next_state <= STATE_ROL_A_4;                 
+      elsif(IR = ROL_A) then
+           next_state <= STATE_ROL_A_4;                 
                  
 			elsif(IR = RESET_ALU) then
 				next_state <= STATE_RESET_ALU_4;
@@ -589,7 +615,7 @@ begin
 			BUS2_Sel <= "01"; -- BUS1
 			MAR_Load <= '1' ; -- BUS2'deki program sayaci degeri MAR'a alindi
 		when STATE_LDA_IMM_5 =>
-			PC_Inc   <= '1'; -- bir sonraki instruction i�in arttirildi(bununla alakasi yok)
+			PC_Inc   <= '1'; -- bir sonraki instruction icin arttirildi(bununla ilgisi yok)
 		when STATE_LDA_IMM_6 =>
 			BUS2_Sel <= "10"; -- memory'den 
 			A_Load   <= '1';
@@ -640,72 +666,65 @@ begin
 			B_Load   <= '1';
 			
 -----------------------------------------------------------
-        -- LOAD_PC_TO_SP1
-        when STATE_LOAD_PC_TO_SP1_4 =>
-            BUS1_Sel <= "000"; -- PC
-            BUS2_Sel <= "01";  -- BUS1
-            SP1_Load <= '1';
-            
-            
-        
-        -- LOAD_SP1_TO_PC_4
-        when STATE_LOAD_SP1_TO_PC_4 =>
-            BUS1_Sel <= "011"; -- SP1
+    -- LOAD_PC_TO_SP1
+    when STATE_LOAD_PC_TO_SP1_4 =>
+        BUS1_Sel <= "000"; -- PC
+        BUS2_Sel <= "01";  -- BUS1
+        SP1_Load <= '1';
+      
+    -- LOAD_SP1_TO_PC_4
+    when STATE_LOAD_SP1_TO_PC_4 =>
+        BUS1_Sel <= "011"; -- SP1
+        BUS2_Sel <= "01";  -- BUS1
+        PC_Load  <= '1';
+
+		-- LOAD_SP2_TO_PC_4
+    when STATE_LOAD_SP2_TO_PC_4 =>
+        --if(pc_in_scr_i /= '1') then
+            BUS1_Sel <= "100"; -- SP2
             BUS2_Sel <= "01";  -- BUS1
             PC_Load  <= '1';
-		
-		-- LOAD_SP2_TO_PC_4
-        when STATE_LOAD_SP2_TO_PC_4 =>
-            --if(pc_in_scr_i /= '1') then
-                BUS1_Sel <= "100"; -- SP2
-                BUS2_Sel <= "01";  -- BUS1
-                PC_Load  <= '1';
-            --end if;
+        --end if;
+    
+    -- JUMP_AND_LINK_SP1
+    when STATE_JUMP_AND_LINK_SP1_4 =>
+        BUS1_Sel <= "000"; -- PC
+        BUS2_Sel <= "01";  -- BUS1
+        SP1_Load <= '1';
+        MAR_Load <= '1' ; -- BUS2'deki program sayaci degeri MAR'a alindi
+    when STATE_JUMP_AND_LINK_SP1_5 =>
+        -- WAIT ONE CLOCK CYCLE
+    when STATE_JUMP_AND_LINK_SP1_6 =>
+        BUS2_Sel <= "10"; -- from memory
+        PC_Load  <= '1';  -- Program sayaci register BUS2 verisini al
+    
+    -- LOAD_SP1_IMM
+    when STATE_LOAD_SP1_IMM_4 =>
+        BUS1_Sel <= "000"; -- PC
+        BUS2_Sel <= "01";  -- BUS1
+        MAR_Load <= '1' ;  -- BUS2'deki program sayaci degeri MAR'a alindi
+    when STATE_LOAD_SP1_IMM_5 =>
+        PC_Inc   <= '1';
+    when STATE_LOAD_SP1_IMM_6 =>
+        BUS2_Sel <= "10"; -- memory'den 
+        SP1_Load <= '1';
         
+    -- LOAD_SP1_DIR
+    when STATE_LOAD_SP1_DIR_4 =>
+        BUS1_Sel <= "000"; -- PC
+        BUS2_Sel <= "01";  -- BUS1
+        MAR_Load <= '1' ;  -- BUS2'deki program sayaci degeri MAR'a alindi    
+    when STATE_LOAD_SP1_DIR_5 =>
+        PC_Inc   <= '1';
+    when STATE_LOAD_SP1_DIR_6 =>
+        BUS2_Sel <= "10";  -- memory'den
+        MAR_Load <= '1' ;  -- BUS2'deki program sayaci degeri MAR'a alindi 
+    when STATE_LOAD_SP1_DIR_7 =>    
+        -- Adress verildikten 1 clk sonra okuma yapilacak
+    when STATE_LOAD_SP1_DIR_8 =>
+        BUS2_Sel <= "10";
+        SP1_Load <= '1';
         
-        
-        -- JUMP_AND_LINK_SP1
-        when STATE_JUMP_AND_LINK_SP1_4 =>
-            BUS1_Sel <= "000"; -- PC
-            BUS2_Sel <= "01";  -- BUS1
-            SP1_Load <= '1';
-            MAR_Load <= '1' ; -- BUS2'deki program sayaci degeri MAR'a alindi
-        when STATE_JUMP_AND_LINK_SP1_5 =>
-            -- WAIT ONE CLOCK CYCLE
-        when STATE_JUMP_AND_LINK_SP1_6 =>
-            BUS2_Sel <= "10"; -- from memory
-            PC_Load  <= '1';  -- Program sayaci register BUS2 verisini al
-        
-        
-        
-        -- LOAD_SP1_IMM
-        when STATE_LOAD_SP1_IMM_4 =>
-            BUS1_Sel <= "000"; -- PC
-            BUS2_Sel <= "01";  -- BUS1
-            MAR_Load <= '1' ;  -- BUS2'deki program sayaci degeri MAR'a alindi
-        when STATE_LOAD_SP1_IMM_5 =>
-            PC_Inc   <= '1';
-        when STATE_LOAD_SP1_IMM_6 =>
-            BUS2_Sel <= "10"; -- memory'den 
-            SP1_Load <= '1';
-            
-        
-        -- LOAD_SP1_DIR
-        when STATE_LOAD_SP1_DIR_4 =>
-            BUS1_Sel <= "000"; -- PC
-            BUS2_Sel <= "01";  -- BUS1
-            MAR_Load <= '1' ;  -- BUS2'deki program sayaci degeri MAR'a alindi    
-        when STATE_LOAD_SP1_DIR_5 =>
-            PC_Inc   <= '1';
-        when STATE_LOAD_SP1_DIR_6 =>
-            BUS2_Sel <= "10";  -- memory'den
-            MAR_Load <= '1' ;  -- BUS2'deki program sayaci degeri MAR'a alindi 
-        when STATE_LOAD_SP1_DIR_7 =>    
-            -- Adress verildikten 1 clk sonra okuma yapilacak
-        when STATE_LOAD_SP1_DIR_8 =>
-            BUS2_Sel <= "10";
-            SP1_Load <= '1';
-            
 -----------------------------------------------------------
 			
 		when STATE_STA_DIR_4 =>
@@ -783,7 +802,7 @@ begin
 
 -----------------------------------------------------------
 
-       when STATE_INC_B_4 =>
+    when STATE_INC_B_4 =>
 			BUS1_Sel <= "001"; -- A_reg
 			BUS2_Sel <= "00";  -- ALU Result
 			ALU_Sel	 <= "10000"; -- B'yi 1 arttir kodu ALU'daki
@@ -802,12 +821,12 @@ begin
 
 -----------------------------------------------------------
         
-        when STATE_DEC_B_4 =>
-            BUS1_Sel <= "001";  -- A_reg
-            BUS2_Sel <= "00";  -- ALU Result
-            ALU_Sel     <= "10001"; -- b dec
-            A_Load   <= '1';   
-            CCR_Load <= '1';
+    when STATE_DEC_B_4 =>
+      BUS1_Sel <= "001";  -- A_reg
+      BUS2_Sel <= "00";  -- ALU Result
+      ALU_Sel     <= "10001"; -- b dec
+      A_Load   <= '1';   
+      CCR_Load <= '1';
 
 -----------------------------------------------------------
 
@@ -896,8 +915,10 @@ begin
 			BUS1_Sel <= "000"; -- PC
 			BUS2_Sel <= "01"; -- BUS1
 			MAR_Load <= '1' ; -- BUS2'deki program sayaci degeri MAR'a alindi
+
 		when STATE_BRA_5 =>
 			-- BOS
+
 		when STATE_BRA_6 =>
 			BUS2_Sel <= "10"; -- from memory
 			PC_Load  <= '1';  -- Program sayaci register BUS2 verisini al
@@ -910,9 +931,11 @@ begin
 			MAR_Load <= '1' ; -- BUS2'deki program sayaci degeri MAR'a alindi
 		when STATE_BEQ_5 =>
 			-- empty for one clock cycle
+			
 		when STATE_BEQ_6 =>
 			BUS2_Sel <= "10"; -- from memory
 			PC_Load  <= '1';  -- Program sayaci register BUS2 verisini al
+
 		when STATE_BEQ_7 =>	  -- Z = '0' state condition , command bypass
 			PC_Inc <= '1';    -- Hic birsey olmamis gibi PC articak
 			
@@ -931,7 +954,6 @@ begin
 	       BUS2_Sel 	<= "11";  -- x"5a"
            PC_Load         <= '1';   -- pc'ye interrupt handle adresi atandi
            --IC_reset_o_reg      <= '0';
-			
 			
 		when others =>
 			IR_Load <= '0';

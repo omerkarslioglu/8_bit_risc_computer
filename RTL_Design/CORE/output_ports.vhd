@@ -88,6 +88,7 @@ begin
 					when x"EF" =>                  -- ICU interrupt_control_reg3_i
 						port_out_15 <= data_in;
 					when others =>
+							--    Those are commented for implementation
 --						port_out_00  <= (others => '0');
 --						port_out_01  <= (others => '0');
 --						port_out_02  <= (others => '0');

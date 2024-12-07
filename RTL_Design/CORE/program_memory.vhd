@@ -17,16 +17,16 @@ architecture arch of program_memory is
 -- All Commands :
 
 -- Loads and Stores Commands
-constant YUKLE_A_SBT		:std_logic_vector(7 downto 0) := x"86"; -- Load register A using immediate value
+constant YUKLE_A_SBT		        :std_logic_vector(7 downto 0) := x"86"; -- Load register A using immediate value
 constant YUKLE_A			:std_logic_vector(7 downto 0) := x"87"; -- Load register A using direct addressing
-constant YUKLE_B_SBT		:std_logic_vector(7 downto 0) := x"88"; -- Load register B using Immediate value
+constant YUKLE_B_SBT		        :std_logic_vector(7 downto 0) := x"88"; -- Load register B using Immediate value
 constant YUKLE_B			:std_logic_vector(7 downto 0) := x"89"; -- Load register B using direct addressing
 
-constant LOAD_PC_TO_SP1		:std_logic_vector(7 downto 0) := x"90"; -- Load PC value to SP1 Register
-constant LOAD_SP1_TO_PC		:std_logic_vector(7 downto 0) := x"91"; -- Load SP1 value to PC Register
-constant JUMP_AND_LINK_SP1	:std_logic_vector(7 downto 0) := x"92"; -- PC takes value of SP1, and previous PC value is saved in SP1 
-constant LOAD_SP1_IMM   	:std_logic_vector(7 downto 0) := x"93"; -- Load immediate value Stack Pointer-1 register 
-constant LOAD_SP1_DIR   	:std_logic_vector(7 downto 0) := x"94"; -- Load value to Stack Pointer-1 register from Direct Address
+constant LOAD_PC_TO_SP1		        :std_logic_vector(7 downto 0) := x"90"; -- Load PC value to SP1 Register
+constant LOAD_SP1_TO_PC		        :std_logic_vector(7 downto 0) := x"91"; -- Load SP1 value to PC Register
+constant JUMP_AND_LINK_SP1	        :std_logic_vector(7 downto 0) := x"92"; -- PC takes value of SP1, and previous PC value is saved in SP1 
+constant LOAD_SP1_IMM   	        :std_logic_vector(7 downto 0) := x"93"; -- Load immediate value Stack Pointer-1 register 
+constant LOAD_SP1_DIR   	        :std_logic_vector(7 downto 0) := x"94"; -- Load value to Stack Pointer-1 register from Direct Address
 
 constant KAYDET_A			:std_logic_vector(7 downto 0) := x"96"; -- Store Register A to Memory using Direct Addr.
 constant KAYDET_B			:std_logic_vector(7 downto 0) := x"97"; -- Store Register B to Memory using Direct Addr.
@@ -52,14 +52,14 @@ constant XOR_AB				:std_logic_vector(7 downto 0) :=x"52"; -- A = A xor B
 
 -- Branches
 constant ATLA				:std_logic_vector(7 downto 0) :=x"20";  -- Branch always to address provided
-constant ATLA_NEGATIFSE		:std_logic_vector(7 downto 0) :=x"21";  -- Branch to Address Provided if N=1
-constant ATLA_POZITIFSE		:std_logic_vector(7 downto 0) :=x"22";  -- Branch to Address Provided if N=0
-constant ATLA_ESITSE_SIFIR	:std_logic_vector(7 downto 0) :=x"23";  -- Branch to Address Provided if Z=1
-constant ATLA_DEGILSE_SIFIR	:std_logic_vector(7 downto 0) :=x"24";  -- Branch to Address Provided if Z=0
-constant ATLA_OVERFLOW_VARSA:std_logic_vector(7 downto 0) :=x"25";  -- Branch to Address Provided if V=1
-constant ATLA_OVERFLOW_YOKSA:std_logic_vector(7 downto 0) :=x"26";  -- Branch to Address Provided if V=0
-constant ATLA_ELDE_VARSA	:std_logic_vector(7 downto 0) :=x"27";  -- Branch to Address Provided if C=1
-constant ATLA_ELDE_YOKSA	:std_logic_vector(7 downto 0) :=x"28";  -- Branch to Address Provided if C=0
+constant ATLA_NEGATIFSE		        :std_logic_vector(7 downto 0) :=x"21";  -- Branch to Address Provided if N=1
+constant ATLA_POZITIFSE		        :std_logic_vector(7 downto 0) :=x"22";  -- Branch to Address Provided if N=0
+constant ATLA_ESITSE_SIFIR	        :std_logic_vector(7 downto 0) :=x"23";  -- Branch to Address Provided if Z=1
+constant ATLA_DEGILSE_SIFIR	        :std_logic_vector(7 downto 0) :=x"24";  -- Branch to Address Provided if Z=0
+constant ATLA_OVERFLOW_VARSA            :std_logic_vector(7 downto 0) :=x"25";  -- Branch to Address Provided if V=1
+constant ATLA_OVERFLOW_YOKSA            :std_logic_vector(7 downto 0) :=x"26";  -- Branch to Address Provided if V=0
+constant ATLA_ELDE_VARSA	        :std_logic_vector(7 downto 0) :=x"27";  -- Branch to Address Provided if C=1
+constant ATLA_ELDE_YOKSA	        :std_logic_vector(7 downto 0) :=x"28";  -- Branch to Address Provided if C=0
 
 -- General Purpose Instruction
 constant NOP				:std_logic_vector(7 downto 0) :=x"01";
@@ -69,46 +69,40 @@ type rom_type is array (0 to 127) of std_logic_vector(7 downto 0);
 constant ROM : rom_type := (
         -- port a pin 0 interrupt is activate
         
-         0  => YUKLE_A_SBT, 
-         1  => x"00",      
-         2  => KAYDET_A,
-         3  => x"96",         -- to RAM (150th address)
-        
-		 4	 => YUKLE_A_SBT,
-		 5   => x"02",        -- ICU control reg1 value
-		 6   => KAYDET_A,
-		 7   => x"ED",        -- ICU control reg1 address
-		 
-		 8	 => YUKLE_A_SBT,
-         9   => x"01",        -- ICU control reg3 value
-         10   => KAYDET_A,
-         11   => x"EF",       -- ICU control reg3 address
+        0       => YUKLE_A_SBT, 
+        1       => x"00",      
+        2       => KAYDET_A,
+        3       => x"96", -- to RAM (150th address)
+        4       => YUKLE_A_SBT,
+        5       => x"02", -- ICU control reg1 value
+        6       => KAYDET_A,
+        7       => x"ED", -- ICU control reg1 address
+        8	=> YUKLE_A_SBT,
+        9       => x"01", -- ICU control reg3 value
+        10      => KAYDET_A,
+        11      => x"EF", -- ICU control reg3 address
 
          -- Timer1 CH1 PWM 
-         12	 => YUKLE_A_SBT,
-         13   => x"03",       -- TIM1 enable, CH1 enable, counter mode is up   
-         14  => KAYDET_A,
-         15  => x"E2",        -- TIM1 control reg1
-        
-         16	 => YUKLE_A_SBT,
-         17  => x"03",        -- TIM1 pwm enable, output generation is enable, ch polarity is high
-         18  => KAYDET_A,
-         19  => x"E3",        -- TIM1 control reg2
-         
-         20  => YUKLE_A_SBT,
-         21  => x"04",        -- 04 in decimal (4+1 prescaler)
-         22  => KAYDET_A,
-         23  => x"E4",        -- Prescaler register
-         
-         24  => YUKLE_A_SBT,
-         25  => x"64",        -- 100 in decimal (Auto R. Reg.) -- For 4 MHz, 8khz pwm signal.
-         26  => KAYDET_A,
-         27  => x"E5",        -- ARR
-        
-         28  => YUKLE_A_SBT,
-         29  => x"32",        -- 50
-         30  => KAYDET_A,
-         31  => x"E6",        -- ccr_ch1
+         12     => YUKLE_A_SBT,
+         13     => x"03", -- TIM1 enable, CH1 enable, counter mode is up   
+         14     => KAYDET_A,
+         15     => x"E2", -- TIM1 control reg1
+         16	=> YUKLE_A_SBT,
+         17     => x"03", -- TIM1 pwm enable, output generation is enable, ch polarity is high
+         18     => KAYDET_A,
+         19     => x"E3", -- TIM1 control reg2
+         20     => YUKLE_A_SBT,
+         21     => x"04",        -- 04 in decimal (4+1 prescaler)
+         22     => KAYDET_A,
+         23     => x"E4",        -- Prescaler register
+         24     => YUKLE_A_SBT,
+         25     => x"64",        -- 100 in decimal (Auto R. Reg.) -- For 4 MHz, 8khz pwm signal.
+         26     => KAYDET_A,
+         27     => x"E5",        -- ARR
+         28     => YUKLE_A_SBT,
+         29     => x"32",        -- 50
+         30     => KAYDET_A,
+         31     => x"E6",        -- ccr_ch1
          
          
          -- MAIN LOOP
@@ -122,7 +116,7 @@ constant ROM : rom_type := (
          -- EXTERNAL WORLD
          -----------------
          -- Compare for max speed:
-         36  => YUKLE_B,      -- port'a'yý oku
+         36  => YUKLE_B,      -- port'a'yï¿½ oku
          37  => x"F0",        -- port_in_00 (port a inputs)
          
          38  => YUKLE_A_SBT,  -- 00'a esitse

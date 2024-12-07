@@ -5,16 +5,16 @@ use ieee.std_logic_unsigned.all;
 
 entity cpu is
     port (
-        clk         : in std_logic;
-        rst         : in std_logic;
-        from_memory : in std_logic_vector(7 downto 0);
-		IC_Signal_i	: in std_logic_vector(7 downto 0); -- Interrupt controller signal shows which peripheral
-		IC_Flag_i	: in std_logic; -- interrupt flag
+        clk                 : in std_logic;
+        rst                 : in std_logic;
+        from_memory         : in std_logic_vector(7 downto 0);
+		IC_Signal_i	        : in std_logic_vector(7 downto 0); -- Interrupt controller signal shows which peripheral
+		IC_Flag_i	        : in std_logic; -- interrupt flag
         -- Outputs :
-        to_memory   : out std_logic_vector(7 downto 0);
-        write_en    : out std_logic;
-        address     : out std_logic_vector(7 downto 0);
-		IC_reset_o	: out std_logic
+        to_memory           : out std_logic_vector(7 downto 0);
+        write_en            : out std_logic;
+        address             : out std_logic_vector(7 downto 0);
+		IC_reset_o	        : out std_logic
     );
 end entity;
 
@@ -48,47 +48,47 @@ architecture arch of cpu is
 
    component data_path is 
         port(
-            clk 		: in std_logic;
-            rst 		: in std_logic;
-            IR_Load 	: in std_logic; -- Instruction Register Load
-            MAR_Load 	: in std_logic; -- Memory Access Register Load
-            PC_Load 	: in std_logic; -- Program Counter Register Load
-            SP1_Load 	: in std_logic;
-            SP2_Load    : in std_logic;
-            PC_Inc		: in std_logic;	-- Program Counter Register Incrementer
-            A_Load		: in std_logic;
-            B_Load 		: in std_logic;
-            ALU_Sel		: in std_logic_vector(4 downto 0);
-            CCR_Load	: in std_logic; -- Condition code register
-            BUS1_Sel	: in std_logic_vector(2 downto 0);
-            BUS2_Sel	: in std_logic_vector(1 downto 0);
-            from_memory	: in std_logic_vector(7 downto 0);
+            clk 		    : in std_logic;
+            rst 		    : in std_logic;
+            IR_Load 	    : in std_logic; -- Instruction Register Load
+            MAR_Load 	    : in std_logic; -- Memory Access Register Load
+            PC_Load 	    : in std_logic; -- Program Counter Register Load
+            SP1_Load 	    : in std_logic;
+            SP2_Load        : in std_logic;
+            PC_Inc		    : in std_logic;	-- Program Counter Register Incrementer
+            A_Load		    : in std_logic;
+            B_Load 		    : in std_logic;
+            ALU_Sel		    : in std_logic_vector(4 downto 0);
+            CCR_Load	    : in std_logic; -- Condition code register
+            BUS1_Sel	    : in std_logic_vector(2 downto 0);
+            BUS2_Sel	    : in std_logic_vector(1 downto 0);
+            from_memory	    : in std_logic_vector(7 downto 0);
             
             -- Outputs :
-            IR			: out std_logic_vector(7 downto 0);
-            address 	: out std_logic_vector(7 downto 0); -- address to memory
-            CCR_Result	: out std_logic_vector(3 downto 0); -- NZVC
-            to_memory	: out std_logic_vector(7 downto 0);  -- data to memery
-            IC_reset_o	: out std_logic;
-            pc_in_scr_o : out std_logic
+            IR			    : out std_logic_vector(7 downto 0);
+            address 	    : out std_logic_vector(7 downto 0); -- address to memory
+            CCR_Result	    : out std_logic_vector(3 downto 0); -- NZVC
+            to_memory	    : out std_logic_vector(7 downto 0);  -- data to memery
+            IC_reset_o	    : out std_logic;
+            pc_in_scr_o     : out std_logic
             
         );	
     end component;
 
-    signal IR_Load      : std_logic;
-    signal IR           : std_logic_vector(7 downto 0);
-    signal MAR_Load     : std_logic;
-    signal PC_Load      : std_logic;
-    signal SP1_Load 	: std_logic;
-    signal SP2_Load     : std_logic;
-    signal PC_Inc       : std_logic;
-    signal A_Load       : std_logic;
-    signal B_Load       : std_logic;
-    signal ALU_Sel      : std_logic_vector(4 downto 0);
-    signal CCR_Result   : std_logic_vector(3 downto 0);
-    signal CCR_Load     : std_logic;
-    signal Bus2_Sel     : std_logic_vector(1 downto 0);
-    signal BUS1_Sel     : std_logic_vector(2 downto 0); 
+    signal IR_Load          : std_logic;
+    signal IR               : std_logic_vector(7 downto 0);
+    signal MAR_Load         : std_logic;
+    signal PC_Load          : std_logic;
+    signal SP1_Load 	    : std_logic;
+    signal SP2_Load         : std_logic;
+    signal PC_Inc           : std_logic;
+    signal A_Load           : std_logic;
+    signal B_Load           : std_logic;
+    signal ALU_Sel          : std_logic_vector(4 downto 0);
+    signal CCR_Result       : std_logic_vector(3 downto 0);
+    signal CCR_Load         : std_logic;
+    signal Bus2_Sel         : std_logic_vector(1 downto 0);
+    signal BUS1_Sel         : std_logic_vector(2 downto 0); 
     signal pc_in_scr_signal : std_logic;
 
 begin

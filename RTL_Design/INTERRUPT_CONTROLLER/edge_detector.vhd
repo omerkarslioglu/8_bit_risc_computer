@@ -3,10 +3,10 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity edge_detector is
 port (
-  clk                     	: in  std_logic;
-  rst                     	: in  std_logic;
-  i_input                  	: in  std_logic;
-  o_pulse                 	: out std_logic
+  clk                     	              : in  std_logic;
+  rst                     	              : in  std_logic;
+  i_input                  	              : in  std_logic;
+  o_pulse                 	              : out std_logic
   );
 end edge_detector;
 

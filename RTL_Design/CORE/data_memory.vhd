@@ -5,12 +5,12 @@ use ieee.std_logic_unsigned.all;
 
 entity data_memory is
 port(
-	clk : in std_logic;
-	address :  in std_logic_vector(7 downto 0);
-	data_in :  in std_logic_vector(7 downto 0);
-	write_en : in std_logic; -- sended signal to write from cpu
+	clk 					: in std_logic;
+	address 			:  in std_logic_vector(7 downto 0);
+	data_in 			:  in std_logic_vector(7 downto 0);
+	write_en			: in std_logic; -- sended signal to write from cpu
 	-- Output :
-	data_out : out std_logic_vector(7 downto 0)
+	data_out 			: out std_logic_vector(7 downto 0)
 );
 end data_memory;
 

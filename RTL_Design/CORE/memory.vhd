@@ -13,6 +13,7 @@ port(
 	--
 	port_in_00 	: in std_logic_vector(7 downto 0);
 	port_in_01 	: in std_logic_vector(7 downto 0);
+	--    Those are commented for implementation
 --	port_in_02 	: in std_logic_vector(7 downto 0);
 --	port_in_03 	: in std_logic_vector(7 downto 0);
 --	port_in_04 	: in std_logic_vector(7 downto 0);
@@ -23,6 +24,7 @@ port(
 	port_in_09 	: in std_logic_vector(7 downto 0);
 	port_in_10 	: in std_logic_vector(7 downto 0);
 	port_in_11 	: in std_logic_vector(7 downto 0);
+	--    Those are commented for implementation
 --	port_in_12 	: in std_logic_vector(7 downto 0);
 --	port_in_13 	: in std_logic_vector(7 downto 0);
 --	port_in_14 	: in std_logic_vector(7 downto 0);
@@ -163,6 +165,7 @@ OUT_U : output_ports port map(
 			data_out <= port_in_00;
 		elsif(address = x"F1") then
 			data_out <= port_in_01;
+			--    Those are commented for implementation
 --		elsif(address = x"F2") then
 --			data_out <= port_in_02;
 --		elsif(address = x"F3") then
@@ -183,6 +186,7 @@ OUT_U : output_ports port map(
 			data_out <= port_in_10;
 		elsif(address = x"FB") then
 			data_out <= port_in_11;
+			--    Those are commented for implementation
 --		elsif(address = x"FC") then
 --			data_out <= port_in_12;
 --		elsif(address = x"FD") then
