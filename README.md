@@ -3,7 +3,7 @@
 The SoC system has high efficiency 8-bit register cells and has custom RISC instruction set architecture. 
 
 <p align="center">
-  <img title="" alt="SoC Architecture" src="docs/images/arch.png"width="700" height="auto">
+  <img title="" alt="SoC Architecture" src="docs/images/arch_small.png"width="700" height="auto">
 </p>
 
 This computer system is suitable for algorithms that can perform various arithmetic and logical operations and make decisions as a result of operations. 
