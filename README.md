@@ -8,7 +8,7 @@ The SoC system has high efficiency 8-bit register cells and has custom RISC inst
 
 This computer system is suitable for algorithms that can perform various arithmetic and logical operations and make decisions as a result of operations. 
 
-The main components of this designed architecture are CPU, memory system, timer units and ICU. This processor supports 37 instructions and has various peripheral features such as interrupt and PWM generating. This designed computer was run on FPGA.
+The main components of this designed architecture are CPU, memory system, timer units and ICU. This processor supports 37 instructions and has various peripheral features such as interrupt and PWM generating.
 
 ---
 
