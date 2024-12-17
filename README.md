@@ -1,7 +1,7 @@
 # Small SoC Design Based On Custom ISA
 
 <p align="center">
-  <img title="" alt="SoC Architecture" src="docs/images/arch.jpg"width="600" height="auto">
+  <img title="" alt="SoC Architecture" src="docs/images/arch.png"width="600" height="auto">
 </p>
 
 The general aim of this project is to design a computer system that requires low cost, has high efficiency 8-bit register cells and has RISC instruction set architecture. 
