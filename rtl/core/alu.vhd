@@ -22,8 +22,8 @@ end ALU;
 
 architecture arch of ALU is
 
-signal sum_unsigned 	: std_logic_vector(8 downto 0); -- 9 bit olmas�n�n sebebi carry var m� yok mu onu anlamak
-signal alu_signal  		: std_logic_vector(7 downto 0); -- Output'u i�emlerde kullanmak sentezde problem ��kart�yor (ALU_RESULT yerine)
+signal sum_unsigned 	: std_logic_vector(8 downto 0); -- 9 bits because of carry bit
+signal alu_signal  		: std_logic_vector(7 downto 0);
 signal add_overflow 	: std_logic;
 signal sub_overflow 	: std_logic;
 
@@ -34,10 +34,10 @@ begin
 		case ALU_Sel is
 			when "00000" => -- Addition
 				alu_signal <= A+B;
-				sum_unsigned 	<= ('0' & A) + ('0' & B); -- basa 0 koyarak 9 bit yapt�m (padding)
+				sum_unsigned 	<= ('0' & A) + ('0' & B); -- padding
 			when "00001" => -- Subtraction
 				alu_signal <= A-B;
-				sum_unsigned 	<= ('0' & A) - ('0' & B); -- basa 0 koyarak 9 bit yapt�m (padding)
+				sum_unsigned 	<= ('0' & A) - ('0' & B); -- padding
 			when "00010" => -- And
 				alu_signal <= A and B;
 			when "00011" => -- 0R

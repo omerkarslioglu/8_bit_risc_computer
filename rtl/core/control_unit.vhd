@@ -39,18 +39,20 @@ type state_type is	(
 	STATE_DECODE_3,
 	STATE_LDA_IMM_4, 
 	STATE_LDA_IMM_5, 
-	STATE_LDA_IMM_6, -- YUKLE A SABIT
+	STATE_LDA_IMM_6,
 	STATE_LDA_DIR_4, 
 	STATE_LDA_DIR_5, 
-	STATE_LDA_DIR_6, STATE_LDA_DIR_7, STATE_LDA_DIR_8, -- YUKLE A DIRECT
+	STATE_LDA_DIR_6, 
+  STATE_LDA_DIR_7, 
+  STATE_LDA_DIR_8,
 	STATE_LDB_IMM_4, 
 	STATE_LDB_IMM_5, 
-	STATE_LDB_IMM_6, -- YUKLE B SABIT
+	STATE_LDB_IMM_6,
 	STATE_LDB_DIR_4, 
 	STATE_LDB_DIR_5, 
 	STATE_LDB_DIR_6, 
 	STATE_LDB_DIR_7, 
-	STATE_LDB_DIR_8, -- YUKLE B DIRECT
+	STATE_LDB_DIR_8,
 	STATE_LOAD_PC_TO_SP1_4,
   STATE_LOAD_SP1_TO_PC_4,
   STATE_JUMP_AND_LINK_SP1_4,
@@ -99,7 +101,7 @@ type state_type is	(
 	STATE_INTERRUPT_0, 
 	STATE_INTERRUPT_1, 
 	STATE_INTERRUPT_2,
-	STATE_LOAD_SP2_TO_PC_4 -- just used for interrupt
+	STATE_LOAD_SP2_TO_PC_4 -- used for interrupt
 );
 
 
@@ -597,41 +599,40 @@ begin
 	write_en <= '0';
 
 	case current_state is
-		when STATE_FETCH_0  => -- operand oku
+		when STATE_FETCH_0  => -- read operand
 			BUS1_Sel <= "000"; -- PC
 			BUS2_Sel <= "01"; -- BUS1
-			MAR_Load <= '1' ; -- BUS2'deki program sayaci degeri MAR'a alindi
+			MAR_Load <= '1' ; -- PC in BUS2 -> MAR 
 		when STATE_FETCH_1  =>
 			PC_Inc <= '1';
 		when STATE_FETCH_2  =>
-			BUS2_Sel <= "10"; -- memory'den 
+			BUS2_Sel <= "10"; -- Select Memory
 			IR_Load  <= '1';
 		when STATE_DECODE_3  =>
-			-- next state güncellenmisti ve ilgili dallanmalarda gerçekleştirilmişti
 -----------------------------------------------------------
 		-- YUKLE_SBT_A
 		when STATE_LDA_IMM_4 =>
 			BUS1_Sel <= "000"; -- PC
 			BUS2_Sel <= "01"; -- BUS1
-			MAR_Load <= '1' ; -- BUS2'deki program sayaci degeri MAR'a alindi
+			MAR_Load <= '1' ; -- PC in BUS2 -> MAR
 		when STATE_LDA_IMM_5 =>
-			PC_Inc   <= '1'; -- bir sonraki instruction icin arttirildi(bununla ilgisi yok)
+			PC_Inc   <= '1'; -- for next instruction
 		when STATE_LDA_IMM_6 =>
-			BUS2_Sel <= "10"; -- memory'den 
+			BUS2_Sel <= "10"; -- Select memory 
 			A_Load   <= '1';
 -----------------------------------------------------------		
 		-- YUKLE_A
 		when STATE_LDA_DIR_4 =>
 			BUS1_Sel <= "000"; -- PC
 			BUS2_Sel <= "01"; -- BUS1
-			MAR_Load <= '1' ; -- BUS2'deki program sayaci degeri MAR'a alindi	
+			MAR_Load <= '1' ; -- PC in BUS2 -> MAR
 		when STATE_LDA_DIR_5 =>
 			PC_Inc   <= '1';
 		when STATE_LDA_DIR_6 =>
-			BUS2_Sel <= "10"; -- memory'den
-			MAR_Load <= '1' ; -- BUS2'deki program sayaci degeri MAR'a alindi 
+			BUS2_Sel <= "10"; -- Select memory
+			MAR_Load <= '1' ; -- PC in BUS2 -> MAR
 		when STATE_LDA_DIR_7 =>	
-			-- Adress verildikten 1 clk sonra okuma yapilacak (o yüzden bos)
+			-- empthy cycle for reading
 		when STATE_LDA_DIR_8 =>
 			BUS2_Sel <= "10";
 			A_Load   <= '1';
@@ -641,11 +642,11 @@ begin
 		when STATE_LDB_IMM_4 =>
 			BUS1_Sel <= "000"; -- PC
 			BUS2_Sel <= "01"; -- BUS1
-			MAR_Load <= '1' ; -- BUS2'deki program sayaci degeri MAR'a alindi
+			MAR_Load <= '1' ; -- PC in BUS2 -> MAR
 		when STATE_LDB_IMM_5 =>
 			PC_Inc   <= '1';
 		when STATE_LDB_IMM_6 =>
-			BUS2_Sel <= "10"; -- memory'den 
+			BUS2_Sel <= "10"; -- Select memory 
 			B_Load   <= '1';
 
 -----------------------------------------------------------		
@@ -653,14 +654,14 @@ begin
 		when STATE_LDB_DIR_4 =>
 			BUS1_Sel <= "000"; -- PC
 			BUS2_Sel <= "01"; -- BUS1
-			MAR_Load <= '1' ; -- BUS2'deki program sayaci degeri MAR'a alindi
+			MAR_Load <= '1' ; -- PC in BUS2 -> MAR
 		when STATE_LDB_DIR_5 =>
 			PC_Inc <= '1';
 		when STATE_LDB_DIR_6 =>
-			BUS2_Sel <= "10"; -- memory'den
-			MAR_Load <= '1' ; -- BUS2'deki program sayaci degeri MAR'a alindi 
+			BUS2_Sel <= "10"; -- Select memory
+			MAR_Load <= '1' ; -- PC in BUS2 -> MAR 
 		when STATE_LDB_DIR_7 =>	
-			-- Adress verildikten 1 clk sonra okuma yapilacak (o yüzden bos)
+			-- empthy cycle for reading
 		when STATE_LDB_DIR_8 =>
 			BUS2_Sel <= "10";
 			B_Load   <= '1';
@@ -691,34 +692,34 @@ begin
         BUS1_Sel <= "000"; -- PC
         BUS2_Sel <= "01";  -- BUS1
         SP1_Load <= '1';
-        MAR_Load <= '1' ; -- BUS2'deki program sayaci degeri MAR'a alindi
+        MAR_Load <= '1' ; -- PC in BUS2 -> MAR
     when STATE_JUMP_AND_LINK_SP1_5 =>
         -- WAIT ONE CLOCK CYCLE
     when STATE_JUMP_AND_LINK_SP1_6 =>
         BUS2_Sel <= "10"; -- from memory
-        PC_Load  <= '1';  -- Program sayaci register BUS2 verisini al
+        PC_Load  <= '1';  -- Take PC value from BUS2
     
     -- LOAD_SP1_IMM
     when STATE_LOAD_SP1_IMM_4 =>
         BUS1_Sel <= "000"; -- PC
         BUS2_Sel <= "01";  -- BUS1
-        MAR_Load <= '1' ;  -- BUS2'deki program sayaci degeri MAR'a alindi
+        MAR_Load <= '1' ;  -- PC in BUS2 -> MAR
     when STATE_LOAD_SP1_IMM_5 =>
         PC_Inc   <= '1';
     when STATE_LOAD_SP1_IMM_6 =>
-        BUS2_Sel <= "10"; -- memory'den 
+        BUS2_Sel <= "10"; -- Select memory 
         SP1_Load <= '1';
         
     -- LOAD_SP1_DIR
     when STATE_LOAD_SP1_DIR_4 =>
         BUS1_Sel <= "000"; -- PC
         BUS2_Sel <= "01";  -- BUS1
-        MAR_Load <= '1' ;  -- BUS2'deki program sayaci degeri MAR'a alindi    
+        MAR_Load <= '1' ;  -- PC in BUS2 -> MAR    
     when STATE_LOAD_SP1_DIR_5 =>
         PC_Inc   <= '1';
     when STATE_LOAD_SP1_DIR_6 =>
-        BUS2_Sel <= "10";  -- memory'den
-        MAR_Load <= '1' ;  -- BUS2'deki program sayaci degeri MAR'a alindi 
+        BUS2_Sel <= "10";  -- Select memory
+        MAR_Load <= '1' ;  -- PC in BUS2 -> MAR 
     when STATE_LOAD_SP1_DIR_7 =>    
         -- Adress verildikten 1 clk sonra okuma yapilacak
     when STATE_LOAD_SP1_DIR_8 =>
@@ -730,14 +731,14 @@ begin
 		when STATE_STA_DIR_4 =>
 			BUS1_Sel <= "000"; -- PC
 			BUS2_Sel <= "01"; -- BUS1
-			MAR_Load <= '1' ; -- BUS2'deki program sayaci degeri MAR'a alindi
+			MAR_Load <= '1' ; -- PC in BUS2 -> MAR
 		when STATE_STA_DIR_5 =>
 			PC_Inc <= '1';
 		when STATE_STA_DIR_6 =>
 			BUS2_Sel <= "10";
 			MAR_Load <= '1';  -- Kayıt adresini tekrar bellege ilettik
 		when STATE_STA_DIR_7 =>
-			BUS1_Sel <= "001"; -- A_reg'i BUS1'e sürdüm
+			BUS1_Sel <= "001"; -- BUS1 <- A_req
 			write_en <= '1';
 
 -----------------------------------------------------------
@@ -745,7 +746,7 @@ begin
 		when STATE_STB_DIR_4 =>
 			BUS1_Sel <= "000"; -- PC
 			BUS2_Sel <= "01"; -- BUS1
-			MAR_Load <= '1' ; -- BUS2'deki program sayaci degeri MAR'a alindi
+			MAR_Load <= '1' ; -- PC in BUS2 -> MAR
 		when STATE_STB_DIR_5 =>
 			PC_Inc <= '1';
 		when STATE_STB_DIR_6 =>
@@ -914,27 +915,27 @@ begin
 		when STATE_BRA_4 =>
 			BUS1_Sel <= "000"; -- PC
 			BUS2_Sel <= "01"; -- BUS1
-			MAR_Load <= '1' ; -- BUS2'deki program sayaci degeri MAR'a alindi
+			MAR_Load <= '1' ; -- PC in BUS2 -> MAR
 
 		when STATE_BRA_5 =>
 			-- BOS
 
 		when STATE_BRA_6 =>
 			BUS2_Sel <= "10"; -- from memory
-			PC_Load  <= '1';  -- Program sayaci register BUS2 verisini al
+			PC_Load  <= '1';  -- Take PC value from BUS2
 			
 -----------------------------------------------------------
 
 		when STATE_BEQ_4 =>
 			BUS1_Sel <= "000"; -- PC
 			BUS2_Sel <= "01"; -- BUS1
-			MAR_Load <= '1' ; -- BUS2'deki program sayaci degeri MAR'a alindi
+			MAR_Load <= '1' ; -- PC in BUS2 -> MAR
 		when STATE_BEQ_5 =>
 			-- empty for one clock cycle
 			
 		when STATE_BEQ_6 =>
 			BUS2_Sel <= "10"; -- from memory
-			PC_Load  <= '1';  -- Program sayaci register BUS2 verisini al
+			PC_Load  <= '1';  -- Take PC value from BUS2
 
 		when STATE_BEQ_7 =>	  -- Z = '0' state condition , command bypass
 			PC_Inc <= '1';    -- Hic birsey olmamis gibi PC articak

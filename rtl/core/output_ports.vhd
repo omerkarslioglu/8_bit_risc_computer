@@ -5,11 +5,11 @@ use ieee.std_logic_unsigned.all;
 
 entity output_ports is 
 	port(
-		clk 		: in std_logic;
-		rst 		: in std_logic;
-		write_en 	: in std_logic;
-		address 	: in std_logic_vector(7 downto 0);
-		data_in 	: in std_logic_vector(7 downto 0);
+		clk 		    : in std_logic;
+		rst 		    : in std_logic;
+		write_en 	  : in std_logic;
+		address 	  : in std_logic_vector(7 downto 0);
+		data_in 	  : in std_logic_vector(7 downto 0);
 		-- Output
 		port_out_00 : out std_logic_vector(7 downto 0);
 		port_out_01 : out std_logic_vector(7 downto 0);

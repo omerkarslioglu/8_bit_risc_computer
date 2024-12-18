@@ -17,14 +17,14 @@ architecture Behavioral of port_interrupt_detector_unit is
 
 component edge_detector is
 	port(
-		clk                     	: in  std_logic;
-		rst                     	: in  std_logic;
-		i_input                  	: in  std_logic;
-		o_pulse                 	: out std_logic
+		clk               : in  std_logic;
+		rst               : in  std_logic;
+		i_input           : in  std_logic;
+		o_pulse           : out std_logic
 	);
 end component;
 
-signal interrupt_flag				: std_logic;
+signal interrupt_flag				        : std_logic;
 
 signal pin0_rising_edge_flag        : std_logic;
 signal pin1_rising_edge_flag        : std_logic;
@@ -35,14 +35,14 @@ signal pin5_rising_edge_flag        : std_logic;
 signal pin6_rising_edge_flag        : std_logic;
 signal pin7_rising_edge_flag        : std_logic;
 
-signal rst_pin_0        			: std_logic;
-signal rst_pin_1        			: std_logic;
-signal rst_pin_2        			: std_logic;
-signal rst_pin_3        			: std_logic;
-signal rst_pin_4        			: std_logic;
-signal rst_pin_5        			: std_logic;
-signal rst_pin_6        			: std_logic;
-signal rst_pin_7       				: std_logic;
+signal rst_pin_0        			      : std_logic;
+signal rst_pin_1        			      : std_logic;
+signal rst_pin_2        			      : std_logic;
+signal rst_pin_3        			      : std_logic;
+signal rst_pin_4        			      : std_logic;
+signal rst_pin_5        			      : std_logic;
+signal rst_pin_6        			      : std_logic;
+signal rst_pin_7       				      : std_logic;
 
 signal interrupt_info_buf           : std_logic_vector(7 downto 0);
 begin

@@ -37,12 +37,12 @@ architecture arch of data_path is
 -- Arithmatic Logic Unit
 component ALU is
 	port(
-		A 			: in std_logic_vector(7 downto 0);
-		B 			: in std_logic_vector(7 downto 0);
-		ALU_Sel		: in std_logic_vector(4 downto 0);
+		A 			    : in std_logic_vector(7 downto 0);
+		B 			    : in std_logic_vector(7 downto 0);
+		ALU_Sel	    : in std_logic_vector(4 downto 0);
 		
 		-- Outputs
-		NZVC   		: out std_logic_vector(3 downto 0);
+		NZVC   		  : out std_logic_vector(3 downto 0);
 		ALU_result 	: out std_logic_vector(7 downto 0)
 	);
 end component;
@@ -53,14 +53,14 @@ signal BUS2 		: std_logic_vector(7 downto 0); -- BUS2 Data
 signal ALU_result 	: std_logic_vector(7 downto 0); 
 signal IR_reg	 	: std_logic_vector(7 downto 0);
 signal MAR			: std_logic_vector(7 downto 0); -- Address
-signal PC			: std_logic_vector(7 downto 0);
+signal PC			  : std_logic_vector(7 downto 0);
 signal SP1			: std_logic_vector(7 downto 0);
 signal SP2			: std_logic_vector(7 downto 0);
 signal A_reg		: std_logic_vector(7 downto 0);
 signal B_reg		: std_logic_vector(7 downto 0);
 signal CCR_in		: std_logic_vector(3 downto 0);
 signal CCR			: std_logic_vector(3 downto 0); -- Condition Info.
-signal PC_IN_ISR    : std_logic;
+signal PC_IN_ISR: std_logic;
 
 --signal IC_reset_o_reg : std_logic;
 
